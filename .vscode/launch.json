@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+         {
+            "type": "php",
+            "request": "launch",
+            "name": "Listen For XDebug",
+            "port": 9003,
+            "pathMappings": {
+                "/var/www/": "${workspaceRoot}"
+            },
+            "xdebugSettings": {
+                "max_children": 256,
+                "max_data": -1,
+                "max_depth": 5
+            },
+            "ignore": [
+                "**/vendor/**/*.php"
+            ]
+        }
+    ]
+}
