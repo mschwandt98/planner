@@ -20,6 +20,7 @@ class ApiBase {
     protected const REQUEST_METHOD_DELETE  = 'DELETE';
 
     protected readonly Database $db;
+    protected readonly string $method;
 
     /**
      * Bereitet die Verarbeitung der Anfrage vor und ruft die entsprechende
@@ -28,9 +29,9 @@ class ApiBase {
      * @param array $allowedMethods
      */
     protected function __construct(array $allowedMethods) {
-        $this->checkRequestMethod($allowedMethods);
-        $this->readMethodInput();
         $this->db = Database::getInstance();
+        $this->readMethodInput();
+        $this->checkRequestMethod($allowedMethods);
     }
 
     /**
@@ -53,11 +54,15 @@ class ApiBase {
             'message'   => $responseCode->getDescription()
         ];
         if ($responseData !== null) {
-            $response['data'] = json_encode($responseData);
+            $response['data'] = $responseData;
         }
 
+        if ($httpResponseCode === null) {
+            $httpResponseCode = $responseCode->getHttpCode();
+        }
         http_response_code($httpResponseCode);
-        echo $response;
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
 
         die();
     }
@@ -78,13 +83,11 @@ class ApiBase {
     private function checkRequestMethod(array $allowedMethods) {
 
         $requestMethod = $_SERVER['REQUEST_METHOD'];
-        if (!in_array($requestMethod, array_keys($allowedMethods))) {
+        if (!in_array($requestMethod, $allowedMethods)) {
             $this->sendResponse(ApiResponseCodes::MethodNotAllowed);
         }
 
-        if (method_exists($this, $allowedMethods[$requestMethod])) {
-            $this->{$allowedMethods[$requestMethod]}();
-        }
+        $this->method = $requestMethod;
     }
 
     /**
@@ -96,17 +99,34 @@ class ApiBase {
     private function readMethodInput() {
 
         global $_DELETE;
+        global $_GET;
+        global $_POST;
         global $_PUT;
 
         $requestMethod = $_SERVER['REQUEST_METHOD'];
-        if ($requestMethod === self::REQUEST_METHOD_PUT || $requestMethod === self::REQUEST_METHOD_DELETE) {
 
-            $requestInput = json_decode(file_get_contents('php://input'), true);
-            if ($requestMethod === self::REQUEST_METHOD_PUT) {
-                $_PUT = $requestInput;
-            } elseif ($requestMethod === self::REQUEST_METHOD_DELETE) {
-                $_DELETE = $requestInput;
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            switch ($requestMethod) {
+            case self::REQUEST_METHOD_GET:
+                $_GET = $data;
+                break;
+            case self::REQUEST_METHOD_POST:
+                $_POST = $data;
+                break;
+            case self::REQUEST_METHOD_PUT:
+                $_PUT = $data;
+                break;
+            case self::REQUEST_METHOD_DELETE:
+                $_DELETE = $data;
+                break;
+            default:
+                $this->sendResponse(ApiResponseCodes::MethodNotAllowed);
             }
+
+        } catch (\Exception $e) {
+            $this->sendResponse(ApiResponseCodes::InvalidInput);
         }
     }
 }

@@ -7,6 +7,7 @@ enum ApiResponseCodes {
     case RequestSuccessful;
     case MissingParameter;
     case InvalidEmail;
+    case InvalidInput;
     case InvalidPassword;
     case InvalidRole;
     case MethodNotAllowed;
@@ -22,6 +23,7 @@ enum ApiResponseCodes {
             self::RequestSuccessful     => 'Request successful',
             self::MissingParameter      => 'Missing parameter',
             self::InvalidEmail          => 'Invalid email',
+            self::InvalidInput          => 'Invalid input. Provide input as JSON.',
             self::InvalidPassword       => 'Password not matching requirements. Password must be at least 8 ' .
                 'characters long and contain at least one uppercase letter, one lowercase letter and one number.',
             self::InvalidRole           => 'Invalid role',
@@ -40,6 +42,7 @@ enum ApiResponseCodes {
             self::RequestSuccessful     => 200,
             self::MissingParameter      => 400,
             self::InvalidEmail          => 400,
+            self::InvalidInput          => 400,
             self::InvalidPassword       => 400,
             self::InvalidRole           => 400,
             self::MethodNotAllowed      => 405,
@@ -57,6 +60,7 @@ enum ApiResponseCodes {
             self::RequestSuccessful     => '', // TODO
             self::MissingParameter      => '', // TODO
             self::InvalidEmail          => '', // TODO
+            self::InvalidInput          => '', // TODO
             self::InvalidPassword       => '', // TODO
             self::InvalidRole           => '', // TODO
             self::MethodNotAllowed      => '', // TODO

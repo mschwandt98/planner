@@ -4,7 +4,6 @@ namespace Planner\Classes\Api;
 
 use Planner\Classes\DataValidator;
 use Planner\Enums\ApiResponseCodes;
-use Planner\Enums\Roles;
 use Planner\Enums\Tables;
 use Planner\Models\Profession;
 
@@ -21,11 +20,24 @@ class ProfessionApi extends ApiBase {
      * Übergibt die Request Methoden an die Elternklasse.
      */
     public function __construct() {
+
         parent::__construct([
-            parent::REQUEST_METHOD_POST     => 'postProfession',
-            parent::REQUEST_METHOD_PUT      => 'updateProfession',
-            parent::REQUEST_METHOD_DELETE   => 'deleteProfession'
+            parent::REQUEST_METHOD_POST,
+            parent::REQUEST_METHOD_PUT,
+            parent::REQUEST_METHOD_DELETE
         ]);
+
+        switch ($this->method) {
+            case parent::REQUEST_METHOD_POST:
+                $this->postProfession();
+                break;
+            case parent::REQUEST_METHOD_PUT:
+                $this->updateProfession();
+                break;
+            case parent::REQUEST_METHOD_DELETE:
+                $this->deleteProfession();
+                break;
+        }
     }
 
     /**
@@ -83,7 +95,7 @@ class ProfessionApi extends ApiBase {
         $insertId = $this->db->insert(Tables::Professions, $fields, $formats);
         $insertId === 0
             ? $this->sendResponse(ApiResponseCodes::UnknownDatabaseError)
-            : $this->sendResponse(ApiResponseCodes::RequestSuccessful, $insertId);
+            : $this->sendResponse(ApiResponseCodes::RequestSuccessful, null, $insertId);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Planner\Classes\Api;
 
-use Planner\Classes\Database;
 use Planner\Enums\ApiResponseCodes;
 use Planner\Enums\Tables;
 use Planner\Models\Profession;
@@ -20,9 +19,12 @@ class ProfessionsApi extends ApiBase {
      * Übergibt die Request Methoden an die Elternklasse.
      */
     public function __construct() {
+
         parent::__construct([
-            parent::REQUEST_METHOD_GET => 'getProfessions'
+            parent::REQUEST_METHOD_GET
         ]);
+
+        $this->getProfessions();
     }
 
     /**
