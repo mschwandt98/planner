@@ -1,6 +1,6 @@
 {
     "db": {
-        "host": "localhost",
+        "host": "db",
         "name": "planner",
         "user": "root",
         "password": "",
