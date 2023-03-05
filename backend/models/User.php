@@ -16,7 +16,7 @@ class User {
         string $email,
         string $first_name,
         string $last_name,
-        Roles|string $role = null,
+        Roles|string $role,
         int $profession_id = null,
         int $id = 0
     ) {

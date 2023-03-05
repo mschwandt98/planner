@@ -99,12 +99,13 @@ class UserApi extends ApiBase {
 
         $first_name = DataValidator::sanitize_string($first_name);
         $last_name = DataValidator::sanitize_string($last_name);
+        $role = isset($role) ? DataValidator::sanitize_string($role) : null;
 
         $user = new User(
             $email,
             $first_name,
             $last_name,
-            isset($role) ? DataValidator::sanitize_string($role) : null,
+            $role,
             isset($profession_id) ? $profession_id : null
         );
 
@@ -112,7 +113,9 @@ class UserApi extends ApiBase {
             'email'         => $user->email,
             'first_name'    => $user->first_name,
             'last_name'     => $user->last_name,
-            'password'      => $password
+            'password'      => $password,
+            'role'          => $role,
+            'profession_id' => $user->profession_id
         ];
         $formats = ['s', 's', 's', 's'];
         if ($user->role !== null) {
@@ -139,7 +142,7 @@ class UserApi extends ApiBase {
 
         global $_PUT;
 
-        if (!array_key_exists('id', $_PUT)) {
+        if (!array_key_exists('id', $_GET)) {
             $this->sendResponse(ApiResponseCodes::MissingParameter);
         }
 
@@ -172,7 +175,7 @@ class UserApi extends ApiBase {
             if ($role === null) {
                 $this->sendResponse(ApiResponseCodes::InvalidRole);
             }
-            $updateFields['role'] = $role;
+            $updateFields['role'] = $role->value;
             $formats[] = 's';
         }
 
@@ -186,7 +189,7 @@ class UserApi extends ApiBase {
             $this->sendResponse(ApiResponseCodes::MissingParameter);
         }
 
-        $userId = $_PUT['id'];
+        $userId = $_GET['id'];
         if (is_string($userId)) {
             $_PUT['id'] = trim($userId);
         }

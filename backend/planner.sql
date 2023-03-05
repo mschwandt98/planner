@@ -45,7 +45,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `first_name` varchar(60) NOT NULL,
   `last_name` varchar(60) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `password` varchar(128) NOT NULL,
   `role` enum('admin','employee','trainee','student') DEFAULT NULL,
   `profession_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
